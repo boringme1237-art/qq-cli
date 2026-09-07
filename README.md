@@ -31,7 +31,7 @@
 ## 安装
 
 ```powershell
-git clone https://github.com/<YOUR-REPO>/qq-cli.git
+git clone https://github.com/boringme1237-art/qq-cli.git
 cd qq-cli
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -e .
