@@ -1,0 +1,16 @@
+[project]
+name = "qq-cli-local"
+version = "0.1.0"
+description = "QQ NT 本地数据只读查询/导出 CLI（多账号、按群导出）"
+requires-python = ">=3.10"
+dependencies = ["click>=8.1,<9", "pycryptodome>=3.19"]
+
+[project.scripts]
+qq-cli = "qq_cli.main:cli"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["qq_cli", "qq_cli.core"]

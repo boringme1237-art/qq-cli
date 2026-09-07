@@ -1,0 +1,25 @@
+# 隐私与本地数据 —— 严禁提交
+exports/
+*.md.export
+.qq-cli/
+
+# 数据库与密钥（绝不入库）
+*.db
+*.db-wal
+*.db-shm
+all_keys.json
+*keys*.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+
+# 开发期探针与私人内容
+tools/
+image/
+npm/
+*.log
