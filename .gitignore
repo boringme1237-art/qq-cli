@@ -23,3 +23,8 @@ tools/
 image/
 npm/
 *.log
+
+# 自动回复运行时产物（含聊天内容，绝不入库）
+qq_watch_state.json
+_audit/
+_workbuddy/
