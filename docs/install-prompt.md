@@ -1,47 +1,59 @@
 # qq-cli 安全安装 Prompt（可直接复制给任何 AI 助手）
 
-> 让 AI 助手（ZCode / WorkBuddy / Claude 等）在本机安全安装 qq-cli。
-> 约束词针对本工具的数据安全红线定制，可直接整段复制使用。
+> 让 AI 助手（ZCode / WorkBuddy / Claude 等）在本机安全安装 qq-cli 并达到"开箱可用"。
+> 约束词针对本工具的数据安全红线定制。整段复制即可。
 
 ````text
-帮我安装 qq-cli（QQ NT 本地聊天数据只读查询/导出工具），
-地址：https://github.com/boringme1237-art/qq-cli
+帮我安装 qq-cli QQ本地聊天数据只读查询工具，
+地址：https://github.com/boringme1237-art/qq-cli ，
 只安装这一个工具，不要修改、安装或配置其他任何项目。整个过程自动完成；
-如果需要我授权（读进程内存、浏览器登录）或操作电脑界面，再提醒我。
-若 git clone 失败，提醒我检查网络/代理后重试即可，不要自行更换其他
-下载源或镜像。
+如果需要我授权（如读进程内存、浏览器登录）或操作电脑界面，再提醒我。
 
-一、安装前请先做一次安全检查（逐文件看代码，不看 README 自述），
-   任何一条不满足就停下来告诉我：
-   1. 不得包含联网/上传代码：不允许 requests/urllib/socket/http/httpx
-      等网络库，不允许把聊天数据、密钥、统计结果发送到任何外部服务。
-   2. 对 QQ 源数据库（文档\Tencent Files\<QQ号>\nt_qq\nt_db\*.db）
-      只能只读：不得写入/修改/删除/重命名源文件；所有 SQL 只能是
-      SELECT；不得直接 sqlite3.connect() 源库（会在 QQ 数据目录产生
-      -wal/-shm 文件）；解密副本只允许写系统临时目录并以只读方式打开。
-   3. 不得触碰微信、其他应用或系统其他位置的数据与配置。
+【第 0 步 · 来源校验】
+只从上面这个仓库克隆，用户名和仓库名必须一字不差（boringme1237-art/qq-cli）。
+如果 git clone 失败，提醒我检查网络/代理后重试，不要自行更换下载源、镜像站
+或任何"看起来类似"的仓库。克隆后核对文件清单与 GitHub 页面一致再继续。
 
-二、阅读 README.md、docs\qqnt-database-notes.md、skills\qq-local-reader\SKILL.md，
-   确认依赖（Windows 10/11、Python ≥3.10、QQ NT 已登录运行）、
-   安装步骤与潜在风险后再开始。
+【第 1 步 · 安装前安全检查】
+逐文件读源码（不是看 README 自述），任何一条不满足就停下来告诉我，不要继续装：
+1. 不得包含联网/上传代码：不允许出现 requests、urllib、socket、http、httpx
+   等网络库，不允许把聊天数据、密钥或统计结果发送到任何外部服务。
+2. 对 QQ 源数据库（文档\Tencent Files\<QQ号>\nt_qq\nt_db\*.db）只能只读打开：
+   不得写入/修改/删除/重命名任何源文件；不得对源库路径建立 sqlite 连接
+   （直连会在源目录生成 -wal/-shm，等于改动源库）；所有 SQL 只能是 SELECT；
+   解密副本只允许写到系统临时目录并以只读方式打开。
+3. 不得触碰微信、其他腾讯应用或系统其他位置的数据与配置。
 
-三、用独立 venv 安装，不污染全局 Python：
-   python -m venv .venv
-   .venv\Scripts\pip install -e .
-   .venv\Scripts\qq-cli.exe accounts
+【第 2 步 · 阅读文档】
+阅读 README.md、docs\qqnt-database-notes.md、skills\qq-local-reader\SKILL.md，
+确认依赖（Windows 10/11、Python ≥3.10、QQ NT 已登录运行）与安装步骤。
 
-四、初始化约定：
-   1. 首次 qq-cli init 需要读取正在运行的 QQ.exe 进程内存以提取本地
-      数据库密钥：纯读取（不注入/不 Hook/不写入），杀毒软件可能告警，
-      属预期行为，无需处理。
-   2. 我本机可能有多个 QQ 号：init 前先运行 qq-cli accounts 列出账号
-      让我确认用哪个，不要替我猜；之后所有命令都带 --account 指定，
-      避免多账号数据混乱。
-   3. 密钥明文保存在 ~/.qq-cli/keys/，属于敏感文件：不得复制到别处、
-      不得上传或写入任何公开位置；工具不用时提醒我运行
-      qq-cli cleanup 清除密钥和明文副本。
-   4. 导出的聊天记录 markdown 含个人敏感信息：导出位置先问我；总结/
-      搜索只在本地完成，禁止把聊天内容粘贴到网页或外部服务。
+【第 3 步 · 安装】
+用独立 venv 安装（python -m venv .venv → pip install -e .），不污染全局 Python。
+依赖白名单只有 click 和 pycryptodome 两个——装出来多任何包都停下来告诉我。
+装完跑一次 qq-cli --version 确认可执行。
+
+【第 4 步 · 初始化（这步需要我在场确认）】
+先运行 qq-cli accounts 列出本机所有 QQ 号，让我确认用哪个，不要替我猜；
+确认后执行 qq-cli init --account <我的QQ号> 提取数据库密钥：它读取正在运行的
+QQ.exe 进程内存，纯读取（不注入/不 Hook/不写入），杀毒软件可能告警属预期，
+无需处理。之后所有命令一律带 --account，避免多账号数据混淆。
+
+【验收标准——做到这些才算装好】
+1. qq-cli groups --account <我的号> 能列出群聊；
+2. qq-cli history "<任一群名>" --limit 5 能显示最近消息；
+3. 把两项输出给我看一眼，安装流程到此结束。
+
+【安全约定，长期有效】
+- 密钥明文保存在 ~/.qq-cli/keys/：不得复制到别处、不得上传或写入任何公开位置；
+  工具长期不用时提醒我运行 qq-cli cleanup 清除密钥和明文副本。
+- 导出的聊天记录 markdown 含个人敏感信息：导出位置先问我；
+  总结/搜索只在本地完成，禁止把聊天内容粘贴到网页或外部服务。
+
+【可选进阶（验收后再提）】
+告诉我仓库 docs/auto-reply/ 有一套「QQ 自动占位回复 + 未回复提醒」的完整方案，
+问我要不要了解；我不点头就不要实施，其中自动发送涉及模拟键盘输入，
+必须等我明确同意。
 ````
 
 ## 常见安装问题
